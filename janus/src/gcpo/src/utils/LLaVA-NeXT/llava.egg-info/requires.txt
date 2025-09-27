@@ -1,0 +1,9 @@
+
+[standalone]
+shortuuid
+httpx==0.24.0
+einops
+ftfy
+
+[train]
+llava[standalone]
