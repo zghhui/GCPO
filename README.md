@@ -7,8 +7,7 @@
 
 ### 🗒️ TODO
 
-- [ ] Release Checkpoint
-
+- [ ] Release All Checkpoints
 - [x] Release code
 
 ## 🤗 Model List
@@ -30,14 +29,16 @@ cd GCPO
 #### 2. Install the training package:
 We provide training codes for **LlamaGen** and **Janus-Pro**, and recommend installing the environments for each.
 
-For LlamaGen: 
+**For LlamaGen: **
+
 ```bash
 conda create -n gcpo_llamagen python=3.10
 conda activate gcpo_llamagen
 pip install -r llamaGen/requirements.txt
 ```
 
-For Janus-Pro: 
+**For Janus-Pro: **
+
 ```bash
 conda create -n gcpo_janus python=3.10
 conda activate gcpo_janus
@@ -45,25 +46,30 @@ pip install -r janus/requirements.txt
 ```
 
 #### 3. Download Models
-For LlamaGen:
+**For LlamaGen:**
+
 ```bash
 huggingface-cli download zghhui/LlamaGen-T2I
 huggingface-cli download google/flan-t5-xl
 wget https://huggingface.co/peizesun/llamagen_t2i/resolve/main/vq_ds16_t2i.pt
 ```
 
-For Janus-Pro:
+**For Janus-Pro:**
+
 ```bash
 huggingface-cli download deepseek-ai/Janus-Pro-1B
 huggingface-cli download deepseek-ai/Janus-Pro-7B
 ```
 
-For HPS Reward:
+**For HPS Reward:**
+
 ```bash
 huggingface-cli xswu/HPSv2
 ```
 
-For Geneval: Please according to the instructions in [Flow-GRPO](https://github.com/yifan123/flow_grpo?tab=readme-ov-file) and [reward-server](https://github.com/yifan123/reward-server).
+**For Geneval Reward**: 
+
+- Please according to the instructions in [Flow-GRPO](https://github.com/yifan123/flow_grpo?tab=readme-ov-file) and [reward-server](https://github.com/yifan123/reward-server).
 
 ## 🚀 Training GCPO
 
