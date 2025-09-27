@@ -29,7 +29,7 @@ cd GCPO
 #### 2. Install the training package:
 We provide training codes for **LlamaGen** and **Janus-Pro**, and recommend installing the environments for each.
 
-**For LlamaGen: **
+**For LlamaGen:**
 
 ```bash
 conda create -n gcpo_llamagen python=3.10
@@ -37,7 +37,7 @@ conda activate gcpo_llamagen
 pip install -r llamaGen/requirements.txt
 ```
 
-**For Janus-Pro: **
+**For Janus-Pro:**
 
 ```bash
 conda create -n gcpo_janus python=3.10
