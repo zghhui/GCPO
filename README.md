@@ -4,11 +4,45 @@
       for Autoregressive Image Generation
     </h1>
 </div>
+<div align="center">
+    <a href="https://arxiv.org/abs/2509.22485">
+        <img src="https://img.shields.io/badge/ArXiv-2509.25027-b31b1b.svg" alt="ArXiv" />
+    </a>&nbsp;
+    <a href="https://huggingface.co/collections/zghhui/gcpo-68d6559a2ded31596c3841fe">
+        <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-Weights-yellow" alt="Huggingface Weights" />
+    </a>&nbsp;
+    <a href="https://github.com/zghhui/GCPO">
+        <img src="https://img.shields.io/badge/Github-Project_Page-blue" alt="Code Page" />
+    </a>
+</div>
 
-### 🗒️ TODO
+## 🔈 News
+- [2025-09] All weights are avialable!
+- [2025-09] Train and inference code are avialable
+- [2025-09] GCPO is released on [Arixv](https://arxiv.org/abs/2509.22485).
 
-- [ ] Release All Checkpoints
-- [x] Release code
+
+### 🔍 Introduction
+We propose a novel reinforcement learning framework, Group Critical-token Policy Optimization (GCPO), to achieve efficient policy optimization of key tokens. We consider critical tokens from three perspectives: causal dependency, entropy-induced spatial structure, and RLVR-focused token diversity. We select approximately 30% of key tokens from all tokens and combine them with dynamic advantage weights to achieve precise optimization✌.
+
+We validate the effectiveness of GCPO on multiple models (**LlamaGen**, **Janus-Pro**) and text-to-image benchmarks (Geneval, T2I-CompBench, DrawBench). Notably, GCPO achieves **0.90** on Geneval built on the original Janus-Pro-7B.
+
+<details><summary><b>CLICK for Detailed Results</b></summary>
+Visualization Results
+<div style="text-align: center; width: 100%;">
+    <img src="assets/compare.png" alt="Image 1" style="width: 100%;">
+</div>
+
+Geneval Results
+<div style="text-align: center; width: 100%;">
+    <img src="assets/geneval.png" alt="Image 1" style="width: 100%;">
+</div>
+
+T2I-CompBench Results
+<div style="text-align: center; width: 100%;">
+    <img src="assets/t2i-compbench.png" alt="Image 1" style="width: 100%;">
+</div>
+</details>
 
 ## 🤗 Model List
 | Model          | Preference Alignment | GenEval          |
