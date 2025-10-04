@@ -17,15 +17,23 @@
 </div>
 
 ## 🔈 News
-- [2025-09] All weights are avialable!
+- [2025-09] All weights are avialable on [Huggingface](https://huggingface.co/collections/zghhui/gcpo-68d6559a2ded31596c3841fe)!
 - [2025-09] Train and inference code are avialable
 - [2025-09] GCPO is released on [Arixv](https://arxiv.org/abs/2509.22485).
 
 
 ### 🔍 Introduction
-We propose a novel reinforcement learning framework, Group Critical-token Policy Optimization (GCPO), to achieve efficient policy optimization of key tokens. We consider critical tokens from three perspectives: causal dependency, entropy-induced spatial structure, and RLVR-focused token diversity. We select approximately 30% of key tokens from all tokens and combine them with dynamic advantage weights to achieve precise optimization✌.
+We propose a novel reinforcement learning framework, Group Critical-token Policy Optimization (GCPO), to achieve efficient policy optimization of critical tokens. We consider critical tokens from three perspectives: 
+- Causal dependency
+- Entropy-induced spatial structure
+- RLVR-focused token diversity
 
-We validate the effectiveness of GCPO on multiple models (**LlamaGen**, **Janus-Pro**) and text-to-image benchmarks (Geneval, T2I-CompBench, DrawBench). Notably, GCPO achieves **0.90** on Geneval built on the original Janus-Pro-7B.
+We select **30%** of critical tokens from all tokens and combine them with Dynamic Advantage Weights to achieve precise optimization✌
+<div style="text-align: center; width: 100%;">
+    <img src="assets/method.png" alt="Image 1" style="width: 100%;">
+</div>
+
+We validate the effectiveness of GCPO on multiple models (**LlamaGen**, **Janus-Pro**) and text-to-image benchmarks (Geneval, T2I-CompBench, DrawBench). Notably, GCPO achieves **0.90** on Geneval built on the original Janus-Pro-7B, and has strong genvalidate the effectiveness of GCPO on multiple models (**LlamaGen**, **Janus-Pro**) and text-to-image benchmarks (Geneval, T2I-CompBench, DrawBench). Notably, GCPO achieves **0.90** on Geneval built on the original Janus-Pro-7B, and has strong generalization on T2I-CompBench.
 
 <details><summary><b>CLICK for Detailed Results</b></summary>
 Visualization Results
@@ -113,8 +121,9 @@ huggingface-cli xswu/HPSv2
 cd llamaGen/src
 bash scripts/rl_gcpo_hps.sh
 ```
-Note:
-- Remember to modify the t5_model path in `gcpo/llamaGen/simpar/model/llama_model.py` (line 1244)
+> [!Note]
+>
+> Remember to modify the t5_model path in `gcpo/llamaGen/simpar/model/llama_model.py` (line 1244)
 
 ### Janus-Pro
 
@@ -123,8 +132,9 @@ cd janus/src
 bash scripts/run_gcpo_hps.sh
 bash scripts/run_gcpo_geneval.sh
 ```
-Notes:
-- Please run geneval server before running geneval reward. The reward function is located in `utils/reward_geneval.py`, and the IP of server can be modified here.
+> [!Note]
+>
+> Please run geneval server before running geneval reward. The reward function is located in `utils/reward_geneval.py`, and the IP of server can be modified here.
 
 
 ## 💫 Inference
@@ -150,3 +160,14 @@ If you have any comments or questions, please open a new issue.
 Our training code is based on [T2I-R1](https://github.com/CaraJ7/T2I-R1), [SimpleAR](https://github.com/wdrink/SimpleAR), and [Flow-GRPO](https://github.com/yifan123/flow_grpo).
 
 Thanks to all the contributors!
+
+## ⭐ Citation
+If you find FGCPO useful for your research or projects, we would greatly appreciate it if you could cite the following paper:
+```
+@article{zhang2025group,
+  title={Group Critical-token Policy Optimization for Autoregressive Image Generation},
+  author={Zhang, Guohui and Yu, Hu and Ma, Xiaoxiao and Zhang, JingHao and Pan, Yaning and Yao, Mingde and Xiao, Jie and Huang, Linjiang and Zhao, Feng},
+  journal={arXiv preprint arXiv:2509.22485},
+  year={2025}
+}
+```
