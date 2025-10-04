@@ -22,7 +22,7 @@
 - [2025-09] GCPO is released on [Arixv](https://arxiv.org/abs/2509.22485).
 
 
-### 🔍 Introduction
+## 🔍 Introduction
 We propose a novel reinforcement learning framework, Group Critical-token Policy Optimization (GCPO), to achieve efficient policy optimization of critical tokens. We consider critical tokens from three perspectives: 
 - Causal dependency
 - Entropy-induced spatial structure
