@@ -61,6 +61,17 @@ class GRPOConfig(GRPOConfig):
     dinov2_ckpt_path: str = field(default=None, metadata={"help": "The path to the dinov2 checkpoint"})
     clip_ckpt_path: str = field(default=None, metadata={"help": "The path to the clip checkpoint"})
     pickscore_ckpt_path: str = field(default=None, metadata={"help": "The path to the pickscore checkpoint"})
+
+        self.ar_topk_percent = args.ar_topk_percent
+        self.grad_topk_percent = args.grad_topk_percent
+        self.simi_topk_percent = args.simi_topk_percent
+        self.daw = args.daw
+
+    # gcpo parameters
+    ar_topk_percent: float = field(default=0.1, metadata={"help": "The token percent of AR dependence for GCPO"})
+    grad_topk_percent: float = field(default=0.1, metadata={"help": "The The token percent high entropy grad for GCPO"})
+    simi_topk_percent: float = field(default=0.1, metadata={"help": "The token percent of low similarity for GCPO"})
+    daw: float = field(default=0.5, metadata={"help": "The dynamic advantage weight for GCPO"})
 @dataclass
 class GRPOScriptArguments(ScriptArguments):
     """
@@ -196,7 +207,7 @@ def main(script_args, training_args, model_args):
         )
 
     trainer.img_save_dir = script_args.img_save_dir
-    trainer.geneval_style = script_args.reward_funcs == ["geneval"]
+    trainer.geneval_style = "geneval" in script_args.reward_funcs
 
     # Train and push the model to the Hub
     trainer.train()

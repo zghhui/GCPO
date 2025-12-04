@@ -162,7 +162,7 @@ Our training code is based on [T2I-R1](https://github.com/CaraJ7/T2I-R1), [Simpl
 Thanks to all the contributors!
 
 ## ⭐ Citation
-If you find FGCPO useful for your research or projects, we would greatly appreciate it if you could cite the following paper:
+If you find GCPO useful for your research or projects, we would greatly appreciate it if you could cite the following paper:
 ```
 @article{zhang2025group,
   title={Group Critical-token Policy Optimization for Autoregressive Image Generation},

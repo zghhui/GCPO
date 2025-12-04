@@ -369,6 +369,11 @@ class JanusGCPOTrainer(Trainer):
         self.patch_size = args.patch_size
         self.max_textcot_length = args.max_textcot_length
 
+        # GCPO parameter
+        self.ar_topk_percent = args.ar_topk_percent
+        self.grad_topk_percent = args.grad_topk_percent
+        self.simi_topk_percent = args.simi_topk_percent
+        self.daw = args.daw
         # image loss is moved to grpo_trainer_two_forward_imageloss
         # assert not self.image_loss
 
@@ -474,15 +479,12 @@ class JanusGCPOTrainer(Trainer):
             raise ValueError("The GRPOTrainer does not support returning outputs")
 
         # Geneval-style data
+        image_gen_prompt = [x["raw_prompt"] for x in inputs]
         if self.geneval_style:
-            image_gen_prompt = [x["raw_prompt"] for x in inputs]
             meta_datas = [x["meta_datas"] for x in inputs]
             expanded_meta_datas = []
             for meta in meta_datas:
                 expanded_meta_datas.extend([meta] * self.new_generations_image)
-        else:
-            ## HPS data
-            image_gen_prompt = [x["raw_prompt"] for x in inputs]
                     
         device = self.accelerator.device
         
@@ -723,7 +725,7 @@ class JanusGCPOTrainer(Trainer):
                     for example in inputs:
                         # Repeat each value in the column for `num_generations` times
                         reward_kwargs[key].extend([example[key]] * self.new_generations_image * self.new_generations_image)
-                if self.geneval_style:
+                if isinstance(reward_func, Geneval):
                     output_reward_func = reward_func(prompts=prompts, images=images, good_image=None, num_generations=self.new_generations_image, geneval_meta_data=expanded_meta_datas, **reward_kwargs)
                 else:
                     output_reward_func = reward_func(prompts=prompts, images=images, good_image=None, num_generations=self.new_generations_image, **reward_kwargs)
@@ -756,21 +758,22 @@ class JanusGCPOTrainer(Trainer):
         
         ## GCPO
         b, seq_list = entropys.shape
-        top_10_percent = int(seq_list * 0.1)
+        ar_topk_percent, ar_topk= 0.1, int(seq_list * 0.1)
+        grad_topk_percent, grad_topk= 0.1, int(seq_list * 0.1)
+        simi_topk_percent, simi_topk= 0.1, int(seq_list * 0.1)
 
         # initial mask
         first_10_mask = torch.zeros_like(completion_mask, dtype=bool)
-        first_10_mask[:, :top_10_percent] = True
+        first_10_mask[:, :ar_topk_percent] = True
         
         # entrpy gradient mask
-        entropy_mask = self.select_high_entropy_gradient_tokens_batch(entropys, topk_frac=0.1)
+        entropy_mask = self.select_high_entropy_gradient_tokens_batch(entropys, topk_frac=grad_topk, ar_topk_percent=ar_topk_percent)
         entropy_mask = entropy_mask.bool()
 
         # similarity mask
-
         cos_sim_valid = cos_sim_list.clone()
         cos_sim_valid[entropy_mask | first_10_mask] = float('inf')
-        top_values, top_indices = torch.topk(cos_sim_valid, k=top_10_percent, dim=1, largest=False)
+        top_values, top_indices = torch.topk(cos_sim_valid, k=simi_topk_percent, dim=1, largest=False)
         cos_sim_mask = torch.zeros_like(completion_mask, dtype=bool)
         batch_indices = torch.arange(completion_mask.size(0)).unsqueeze(1).expand_as(top_indices)
         cos_sim_mask[batch_indices, top_indices] = True
@@ -791,7 +794,7 @@ class JanusGCPOTrainer(Trainer):
         
         # dynamic advantage normalization
         log_ratio = per_token_logps - ref_per_token_logps
-        coef_1 = torch.clamp(log_ratio, -0.5, 0.5)
+        coef_1 = torch.clamp(log_ratio, -daw, daw)
         coef_1 = torch.exp(coef_1)   
         coef_1 = coef_1.cumsum(dim=-1) / torch.arange(1, coef_1.size(1)+1, dtype=coef_1.dtype, device=coef_1.device)
            
@@ -824,7 +827,7 @@ class JanusGCPOTrainer(Trainer):
 
         return loss
 
-    def select_high_entropy_gradient_tokens_batch(self, entropy_seq, topk_frac=0.1):
+    def select_high_entropy_gradient_tokens_batch(self, entropy_seq, topk_frac=0.1, ar_topk_percent=0.1):
         B, N = entropy_seq.shape
         h = w = int(N ** 0.5)
         entropy_map = entropy_seq.view(B, h, w)  # [B, H, W]
@@ -857,8 +860,8 @@ class JanusGCPOTrainer(Trainer):
         grad_mag = torch.sqrt(dx ** 2 + dy ** 2)  # [B, H, W]
 
         grad_flat = grad_mag.view(B, -1)  # [B, N]
-        N_valid = int(N * 0.8)
-        offset = int(N * 0.1)
+        N_valid = int(N * (1-0.1-ar_topk_percent))
+        offset = int(N * ar_topk_percent)
         selected_mask = torch.zeros_like(grad_flat)
         for b in range(B):
             grad_sub = grad_flat[b, offset:offset+N_valid]  # 80%
